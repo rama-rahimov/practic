@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export default async (req, res, next) => {
-    console.log('start');
     if (!(req.cookies || {}).guestId) {
       const id = uuidv4();
       res.cookie('guestId', id, {
@@ -13,6 +12,5 @@ export default async (req, res, next) => {
     } else {
       req.guestId = req.cookies.guestId;
     }
-    console.log('end')
     next();
 };

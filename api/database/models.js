@@ -24,14 +24,17 @@ const fileSchema = new mongoose.Schema({
 });
 
 const messageSchema = new mongoose.Schema({
-    text: String,
+    text: {
+        type: String,
+        required: true
+    },
     sender: {
         type: {
-            type: String, // "user" или "guest"
-            enum: ["user", "guest"],
-            required: true
+            type: String, // "admin" или "guest"
+            enum: ["admin", "guest"],
+            required: true,
         },
-        userId: {
+        adminId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         },
@@ -54,10 +57,10 @@ const conversationSchema = new mongoose.Schema({
         {
             type: {
                 type: String, // "user" или "guest"
-                enum: ["user", "guest"],
+                enum: ["admin", "guest"],
                 required: true
             },
-            userId: {
+            adminId: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "User"
             },

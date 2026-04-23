@@ -7,7 +7,7 @@ export default async function (req, res, next) {
       if (!auth || !auth.split(" ")[1]) throw new Error("Token is required");
       const token = auth.split(" ")[1];
       const payload = await jwt.verify(token, process.env.JWT_SECRET);
-      const user = await UserModel.findOne({ id: payload.id, email: payload.email });
+      const user = await UserModel.findOne({ email: payload.email });
       if (!user) throw new Error("User does not exist");
       req.user = user;
       next();

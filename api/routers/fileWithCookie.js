@@ -36,9 +36,7 @@ router.post('/save', cookie, upload.single('file'), async (req, res) => {
 
 router.get('/my-images', cookie, async (req, res) => {
     try {
-        console.log({ guestId: req.guestId });
         const images = await ImageModel.find({ guestId: req.guestId });
-        console.log({ images });
         res.json(images);
     }catch(err) {
         res.json({ error: true, message: err });

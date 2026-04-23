@@ -11,7 +11,6 @@ export default async  (socket, next) =>  {
         let user = "";
         if(token && token !== "undefined") {
           const payload = await jwt.verify(token, process.env.JWT_SECRET);
-            console.log({ payload})
           user = await UserModel.findOne({ email: payload.email });
         }
         socket.guestId = guestId;

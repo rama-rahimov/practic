@@ -18,7 +18,6 @@ router.post('/upload', upload.single('file'), async (req, res) => {
           );
           stream.end(file.buffer);
         });
-        console.log({ url: result , public_id: result.public_id });
         await FileModel.create({
             public_id: result.public_id,
             path: result.secure_url,

@@ -67,7 +67,6 @@ const makeid = (length) => {
         result += characters.charAt(Math.floor(Math.random() *
             charactersLength));
     }
-    console.log({ result, length });
     return result;
 }
 
