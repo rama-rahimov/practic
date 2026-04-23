@@ -2,6 +2,8 @@ import express from 'express';
 import fileSystem from "./routers/fileSystem.js";
 import fileCloudinary from "./routers/fileCloudinary.js";
 import fileWithCookie from "./routers/fileWithCookie.js";
+import chatRestApi from "./routers/chat.js";
+import profile from "./routers/profile.js";
 import cookieParser from "cookie-parser";
 import chatMiddleware from "./middleware/chatMiddleware.js";
 import {chat} from "./routers/chat.js";
@@ -32,7 +34,11 @@ app.use('/', fileSystem);
 app.use('/fileCloudinary', fileCloudinary);
 app.use('/fileWithCookie', fileWithCookie);
 app.use('/auth', auth);
-chatNamespace.on('connection', chat);
+app.use('/profile', profile);
+app.use('/chat', chatRestApi);
+chatNamespace.on('connection', (socket) => {
+    chat(socket, chatNamespace);
+});
 
 server.listen(port, () => {
     console.log(`Server started on port ${port}`);

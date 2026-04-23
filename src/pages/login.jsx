@@ -7,7 +7,11 @@ export default function Login() {
         email: "",
         password: ""
     });
-
+    const goToChat = (e) => {
+        e.preventDefault();
+        localStorage.removeItem("token");
+        navigate("/chat");
+    }
     const handleChange = (e) => {
         setForm({
             ...form,
@@ -18,7 +22,6 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log({form});
             const res = await fetch("http://localhost:3000/auth/login", {
                 method: "POST",
                 headers: {
@@ -28,7 +31,6 @@ export default function Login() {
                 credentials: "include"
             });
             const data = await res.json();
-            console.log({ dataLogin: data });
             localStorage.removeItem("token");
             localStorage.setItem("token", data.token);
             if (!res.ok) {
@@ -70,6 +72,8 @@ export default function Login() {
                 <button type="submit" style={styles.button}>
                     Login
                 </button>
+                <p style={{cursor:'pointer'}} onClick={() => navigate('/register')}><b>Registration</b></p>
+                <p style={{cursor:'pointer'}} onClick={goToChat}><b>Chat with Admin</b></p>
             </form>
         </div>
     );
