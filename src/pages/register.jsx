@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {useNavigate} from "react-router-dom";
+import apiFetch from "../../api.js";
 
 export default function Register() {
     const navigate = useNavigate();
@@ -20,21 +21,18 @@ export default function Register() {
         e.preventDefault();
         try {
             console.log({form});
-            const res = await fetch("http://localhost:3000/auth/register", {
+            const res = await apiFetch('', "/register", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(form),
-                credentials: "include"
+                body: JSON.stringify(form)
             });
             const data = await res.json();
-            if (!res.ok) {
-                alert(data.message || "Ошибка входа");
+            if (data.error) {
+                alert(data.data || "Ошибка входа");
                 return;
+            }else {
+                alert("Успешный вход!");
+                navigate("/");
             }
-            alert("Успешный вход!");
-            navigate("/");
         } catch (err) {
             console.error(err);
             alert("Ошибка сервера");
