@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {useNavigate} from "react-router-dom";
+import apiFetch from "../../api.js";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -22,23 +23,20 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch("http://localhost:3000/auth/login", {
+            const res = await apiFetch("","/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(form),
-                credentials: "include"
+                body: JSON.stringify(form)
             });
             const data = await res.json();
             localStorage.removeItem("token");
             localStorage.setItem("token", data.token);
             if (!res.ok) {
-                alert(data.message || "Ошибка входа");
+                alert(data.error || "Ошибка входа");
                 return;
+            }else {
+                alert("Успешный вход!");
+                navigate("/chat");
             }
-            alert("Успешный вход!");
-            navigate("/chat");
         } catch (err) {
             console.error(err);
             alert("Ошибка сервера");
@@ -48,7 +46,6 @@ export default function Login() {
         <div style={styles.container}>
             <form onSubmit={handleSubmit} style={styles.form}>
                 <h2>Login</h2>
-
                 <input
                     type="email"
                     name="email"
@@ -58,7 +55,6 @@ export default function Login() {
                     required
                     style={styles.input}
                 />
-
                 <input
                     type="password"
                     name="password"
@@ -68,7 +64,6 @@ export default function Login() {
                     required
                     style={styles.input}
                 />
-
                 <button type="submit" style={styles.button}>
                     Login
                 </button>

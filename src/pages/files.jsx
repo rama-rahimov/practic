@@ -1,10 +1,9 @@
+import apiFetch from "../../api.js";
+
 export default function Files() {
     async function getUpload() {
         try {
-            const res = await fetch('http://localhost:3000/fileWithCookie/my-images', {
-                method: 'GET',
-                credentials: 'include'
-            });
+            const res = await apiFetch('file','/fileCloudinaryCookie/my-images');
             const data = await res.text();
             document.getElementById('result').innerText = data;
             if (data.startsWith('/file/')) {
@@ -26,7 +25,7 @@ export default function Files() {
         const formData = new FormData();
         formData.append('file', file);
         try {
-            const res = await fetch('http://localhost:3000/fileWithCookie/save', {
+            const res = await apiFetch('file','fileCloudinaryCookie/save', {
                 method: 'POST',
                 body: formData,
                 credentials: 'include'

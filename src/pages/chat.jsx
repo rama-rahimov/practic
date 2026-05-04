@@ -1,6 +1,7 @@
 import './pages.css';
 import {io} from "socket.io-client";
 import {useEffect, useState} from "react";
+import apiFetch from "../../api.js"
 export default function Chat() {
     const [conversation, setConversation] = useState([]);
     const [activeInput, setActiveInput] = useState(true);
@@ -8,7 +9,7 @@ export default function Chat() {
     const [myData, setMyData] = useState({});
     const [value, setValue] = useState("");
     const [msg, setMsg] = useState([]);
-    const socket = io("http://localhost:3000/chat", {
+    const socket = io("http://localhost:3002/chat", {
         withCredentials: true,
         auth: {
             token: localStorage.getItem("token"),
@@ -32,49 +33,28 @@ export default function Chat() {
 
    async function showChat(e, roomId) {
         e.preventDefault();
-        const getMessages = await fetch(`http://localhost:3000/chat/messages/${roomId}`, {
-            headers: {
-                authorization: `Bearer ${localStorage.getItem("token")}`,
-                'Content-Type': 'application/json'
-            }
-        });
+        const getMessages = await apiFetch('chat',`/messages/${roomId}`);
         socket.emit("join_room", roomId);
         const messages = await getMessages.json();
         setRoomId(roomId);
-        setMsg(messages.messages);
+        setMsg(messages.data);
         setActiveInput(false);
     }
     useEffect( () => {
         try {
             (async () => {
-                const userJson = await fetch("http://localhost:3000/profile", {
-                    headers:{
-                        authorization: `Bearer ${localStorage.getItem("token")}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
+                const userJson = await apiFetch('chat',"/profile");
                 const user = await userJson.json();
-                setMyData(user.user)
-                if(user.user && (user.user || {}).role === 10){
-                    const conver = await fetch('http://localhost:3000/chat/conversation', {
-                        headers: {
-                            authorization: `Bearer ${localStorage.getItem("token")}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
+                setMyData(user.data)
+                if(user.data && (user.data || {}).role === 10){
+                    const conver = await apiFetch('chat','/conversation');
                     const takeConversation = await conver.json();
-                    setConversation(takeConversation.all);
+                    setConversation(takeConversation.data);
                 }
-            if(!user.user || (user.user || {}).role === 1){
-                const clientMsg = await fetch(`http://localhost:3000/chat/messages`, {
-                  headers: {
-                      authorization: `Bearer ${localStorage.getItem("token")}`,
-                      'Content-Type': 'application/json'
-                  },
-                  credentials:'include'
-                })
+            if(!user.data || (user.data || {}).role === 1){
+                const clientMsg = await apiFetch('chat',`/messages`);
                 const messages = await clientMsg.json();
-                setMsg(messages.messages);
+                setMsg(messages.data);
             }})()
         }
     catch(err) {
